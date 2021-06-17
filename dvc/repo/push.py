@@ -43,17 +43,18 @@ def push(
     )
 
     dolt_pushed = 0
-    remote_conf = None
-    for t in expanded_targets:
-        if os.path.exists(os.path.join(t, ".dolt")):
-            remotes = self.config.get("remote", None)
-            if not remotes:
-                break
-            remote_conf = remotes.get(remote, None)
-            if not remote_conf:
-                break
-            db = dolt.Dolt(t)
-            db.push(remote=remote, set_upstream=True, refspec="master")
-            dolt_pushed += 1
+    if extended_targets is not None:
+        remote_conf = None
+        for t in expanded_targets:
+            if os.path.exists(os.path.join(t, ".dolt")):
+                remotes = self.config.get("remote", None)
+                if not remotes:
+                    break
+                remote_conf = remotes.get(remote, None)
+                if not remote_conf:
+                    break
+                db = dolt.Dolt(t)
+                db.push(remote=remote, set_upstream=True, refspec="master")
+                dolt_pushed += 1
 
     return len(used_run_cache) + self.cloud.push(used, jobs, remote=remote) + dolt_pushed
