@@ -43,7 +43,7 @@ def push(
     )
 
     dolt_pushed = 0
-    if extended_targets is not None:
+    if expanded_targets is not None:
         remote_conf = None
         for t in expanded_targets:
             if os.path.exists(os.path.join(t, ".dolt")):
