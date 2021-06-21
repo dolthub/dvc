@@ -55,7 +55,16 @@ def push(
                     break
             db = dolt.Dolt(t)
             remote_url = remote_conf.get("url")
-            db.remote(name=remote, url="file://" + remote_url, add=True)
+
+            existing_remotes = db.remote()
+            found_remote = False
+            for r in existing_remotes:
+                if r.name == remote:
+                    found_remote = True
+                    break
+            if not found_remote:
+                db.remote(name=remote, url="file://" + remote_url, add=True)
+
             db.push(remote=remote, set_upstream=True, refspec="master")
             dolt_pushed += 1
 

@@ -148,6 +148,7 @@ class BaseOutput:
         if self.use_cache and self.odb is None:
             raise RemoteCacheRequiredError(self.path_info)
 
+        self.is_dolt = False
         if self.fs.isdolt(self) or (self.hash_info and ".dolt" in self.hash_info.value):
             self.use_cache = False
             self.is_dolt = True
