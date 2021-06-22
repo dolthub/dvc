@@ -53,8 +53,19 @@ def push(
                 remote_conf = remotes.get(remote, None)
                 if not remote_conf:
                     break
-                db = dolt.Dolt(t)
-                db.push(remote=remote, set_upstream=True, refspec="master")
-                dolt_pushed += 1
+            db = dolt.Dolt(t)
+            remote_url = remote_conf.get("url")
+
+            existing_remotes = db.remote()
+            found_remote = False
+            for r in existing_remotes:
+                if r.name == remote:
+                    found_remote = True
+                    break
+            if not found_remote:
+                db.remote(name=remote, url="file://" + remote_url, add=True)
+
+            db.push(remote=remote, set_upstream=True, refspec="master")
+            dolt_pushed += 1
 
     return len(used_run_cache) + self.cloud.push(used, jobs, remote=remote) + dolt_pushed
