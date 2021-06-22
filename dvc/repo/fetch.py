@@ -79,28 +79,29 @@ def fetch(
         raise DownloadError(failed)
 
     remote_url = None
-    for t in targets:
-        outs = self.find_outs_by_path(t, strict=False)
-        if len(outs) != 1:
-            continue
-        out = outs[0]
-        if not out:
-            continue
-        if out.hash_info.value is not None and ".dolt" in out.hash_info.value:
-            if not remote_url:
-                remotes = self.config.get("remote", None)
-                if not remotes:
-                    break
-                remote_conf = remotes.get(remote, None)
-                if not remote_conf:
-                    break
-                remote_url = "file://" + remote_conf.get("url")
-            if not os.path.exists(t):
-                dolt.Dolt.clone(remote_url=remote_url, new_dir=t)
-                downloaded += 1
-            else:
-                db = dolt.Dolt(t)
-                db.pull(remote=remote)
+    if targets is not None:
+        for t in targets:
+            outs = self.find_outs_by_path(t, strict=False)
+            if len(outs) != 1:
+                continue
+            out = outs[0]
+            if not out:
+                continue
+            if out.hash_info.value is not None and ".dolt" in out.hash_info.value:
+                if not remote_url:
+                    remotes = self.config.get("remote", None)
+                    if not remotes:
+                        break
+                    remote_conf = remotes.get(remote, None)
+                    if not remote_conf:
+                        break
+                    remote_url = "file://" + remote_conf.get("url")
+                if not os.path.exists(t):
+                    dolt.Dolt.clone(remote_url=remote_url, new_dir=t)
+                    downloaded += 1
+                else:
+                    db = dolt.Dolt(t)
+                    db.pull(remote=remote)
 
     return downloaded
 

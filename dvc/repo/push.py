@@ -43,10 +43,10 @@ def push(
     )
 
     dolt_pushed = 0
-    remote_conf = None
-    for t in expanded_targets:
-        if os.path.exists(os.path.join(t, ".dolt")):
-            if not remote_conf:
+    if expanded_targets is not None:
+        remote_conf = None
+        for t in expanded_targets:
+            if os.path.exists(os.path.join(t, ".dolt")):
                 remotes = self.config.get("remote", None)
                 if not remotes:
                     break
