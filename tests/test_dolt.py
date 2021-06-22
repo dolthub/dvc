@@ -218,6 +218,7 @@ def test_dolt_dir_push(tmp_dir, dvc, doltdb, dolt_path, remote):
 
     (_,) = tmp_dir.dvc_add(dolt_path)
     dvc.push(targets=["data/test_db"], remote="upstream")
+    dvc.push(targets=["data/test_db"], remote="upstream")
 
     assert os.path.exists(os.path.join(remote_url, "manifest"))
     assert os.path.exists(os.path.join(remote_url, "lock"))
